@@ -3,6 +3,6 @@
 
 #include "main.h"
 
-bool is_identity(void **, int n, int m);
+bool is_identity(float **, int n, int m);
 
 #endif

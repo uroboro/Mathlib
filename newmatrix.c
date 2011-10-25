@@ -10,5 +10,5 @@ void newmatrix(float **dest, int m, int n){
 	dest=(float **)malloc(m*FLOATP_S);
 	for(i=0; i<n; i++) dest[i]=(float *)malloc(n*FLOAT_S);
 	
-	return matrix;
+	return;
 }

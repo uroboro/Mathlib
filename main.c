@@ -5,12 +5,13 @@ int main(int argc, char **argv){
 
 	int i, j;
 	int orden;
+	float **matrix;
 	char letra[3]={ 'x', 'y', 'z' };
 
 	printf("incognitas: ");
 	scanf("%d", &orden);
 
-	float **matrix=newmatrix(orden);
+	newmatrix(matrix, orden, orden);
 
 	//get the matrix
 	for(i=0; i<orden; i++)

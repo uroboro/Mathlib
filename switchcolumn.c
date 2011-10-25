@@ -4,7 +4,7 @@ This function switches the pos column with the n column.
 */
 #include "switchcolumn.h"
 
-void switchcolumn(void **dest, void **ori, int m, int n, int pos){
+void switchcolumn(float **dest, float **ori, int m, int n, int pos){
 
 	if(m+1!=n) return;
 

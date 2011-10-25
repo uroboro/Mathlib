@@ -3,7 +3,7 @@ This function will create a new matrix which is done by subtracting the first ro
 */
 #include "mksubmatrix.h"
 
-void mksubmatrix(void **dest, void **ori, int m, int n, int pos){
+void mksubmatrix(float **dest, float **ori, int m, int n, int pos){
 
 	if(m!=n) return;
 	

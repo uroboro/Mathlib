@@ -3,6 +3,6 @@
 
 #include "main.h"
 
-bool is_symmetric(void **, int n, int m);
+bool is_symmetric(float **, int m, int n);
 
 #endif

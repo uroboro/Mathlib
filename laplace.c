@@ -2,7 +2,7 @@
 
 float laplace(float **matrix, int m, int n){
 
-	if(m!=n) return;
+	if(m!=n) return 0;
 
 	int i;
 	float c=0;

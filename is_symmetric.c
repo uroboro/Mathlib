@@ -1,13 +1,13 @@
 #include "is_symmetric.h"
 
-bool is_symmetric(void **matrix, int n, int m){
+bool is_symmetric(float **matrix, int m, int n){
 
-	if(n!=m) return FALSE;
+	if(m!=n) return FALSE;
 
 	int i, j;
 
-	for(i=0; i<orden; i++)
-		for(j=0; j<orden; j++)
+	for(i=0; i<m; i++)
+		for(j=0; j<n; j++)
 			if(matrix[i][j]!=matrix[j][i]) return FALSE;
 
 	return TRUE;

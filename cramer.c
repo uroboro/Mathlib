@@ -13,12 +13,12 @@ float *cramer(float **matrix, int orden){
 	float *answer=(float *)malloc((orden+1)*FLOAT_S);
 
 	newmatrix(temp, orden, orden);
-	answer[orden]=laplace(matrix, orden);
+	answer[orden]=laplace(matrix, orden, orden);
 
 	for(i=0; i<orden; i++){
 		//switches the i column with the last column from the original matrix:
 		switchcolumn(temp, matrix, orden, orden, i);
-		answer[i]=laplace(temp, orden)/answer[orden];
+		answer[i]=laplace(temp, orden, orden)/answer[orden];
 	}
 
 	return answer;

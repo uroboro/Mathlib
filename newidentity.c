@@ -1,6 +1,6 @@
 #include "newidentity.h"
 
-void newidentity(void **dest, int m, int n){
+void newidentity(float **dest, int m, int n){
 
 	if(m!=n) return;
 
@@ -12,5 +12,5 @@ void newidentity(void **dest, int m, int n){
 			else dest[i][j]=0.0;
 		}
 
-	return matrix;
+	return;
 }

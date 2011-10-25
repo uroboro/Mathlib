@@ -9,6 +9,7 @@ List:
 - Make an identity matrix
 - Check matrix identity
 - Check matrix simmetry
+- Transpose a matrix
 - Determinant of a matrix (Laplace's theorem)
 
 - Get the solution to a system of n equations of n unknowns (Cramer's theorem, with Laplace's)
