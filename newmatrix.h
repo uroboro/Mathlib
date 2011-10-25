@@ -3,6 +3,6 @@
 
 #include "main.h"
 
-float **newmatrix(int);
+void newmatrix(float **dest, int m, int n);
 
 #endif

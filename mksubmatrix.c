@@ -3,20 +3,20 @@ This function will create a new matrix which is done by subtracting the first ro
 */
 #include "mksubmatrix.h"
 
-float **mksubmatrix(float **matrix, int orden, int n){
+void mksubmatrix(void **dest, void **ori, int m, int n, int pos){
 
+	if(m!=n) return;
+	
 	int mi, mj, si, sj;
-	float **submatrix=newmatrix(orden-1);
-
-	for(si=0; si<orden-1; si++){
+	for(si=0; si<m-1; si++){
 		mi=si+1; //skip the first row
-		for(sj=0; sj<orden-1; sj++){
+		for(sj=0; sj<n-1; sj++){
 			if(sj==0) mj=0; //return mj to 0 only if we start a new for loop for si
-			if(mj==n) mj=sj+1; //skip the n column
-			submatrix[si][sj]=matrix[mi][mj];
+			if(mj==pos) mj=sj+1; //skip the n column
+			dest[si][sj]=ori[mi][mj];
 			mj++; //jump to next column
 		}
 	}
 
-	return submatrix;
+	return;
 }

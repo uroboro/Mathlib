@@ -1,8 +1,6 @@
 #ifndef NEWIDENTITY_H
 #define NEWIDENTITY_H
 
-#include "main.h"
-
-float **newidentity(int);
+void newidentity(void **dest, int m, int n);
 
 #endif

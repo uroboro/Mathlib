@@ -8,16 +8,18 @@ Developed by Federico Sandri <uroboro.845@gmail.com>
 
 float *cramer(float **matrix, int orden){
 
-    int i;
-    float *answer=(float *)malloc((orden+1)*FLOAT_S);
-    float **temp=newmatrix(orden);
-    
-    answer[orden]=laplace(matrix, orden);
+	int i;
+	float **temp;
+	float *answer=(float *)malloc((orden+1)*FLOAT_S);
 
-    for(i=0; i<orden; i++){
-        temp=switchcolumn(matrix, i, orden);//switches the variable column with the last column from the original one
-        answer[i]=laplace(temp, orden)/answer[orden];
-    }
+	newmatrix(temp, orden, orden);
+	answer[orden]=laplace(matrix, orden);
 
-    return answer;
+	for(i=0; i<orden; i++){
+		//switches the i column with the last column from the original matrix:
+		switchcolumn(temp, matrix, orden, orden, i);
+		answer[i]=laplace(temp, orden)/answer[orden];
+	}
+
+	return answer;
 }

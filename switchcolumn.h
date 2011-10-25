@@ -1,9 +1,7 @@
 #ifndef SWITCHMATRIX_H
 #define SWITCHMATRIX_H
 
-#include "newmatrix.h"
-
-float **switchcolumn(float **, int, int);
+void switchcolumn(void **dest, void **ori, int n, int m, int pos);
 
 #endif
 

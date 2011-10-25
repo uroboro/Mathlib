@@ -1,10 +1,14 @@
 #include "laplace.h"
 
-float laplace(float **matrix, int orden){
+float laplace(float **matrix, int m, int n){
 
-	int n;
+	if(m!=n) return;
+
+	int i;
 	float c=0;
-	switch(orden){
+	float **submatrix;
+
+	switch(m){
 	case 1:
 		c=matrix[0][0];
 		free(matrix);
@@ -13,9 +17,10 @@ float laplace(float **matrix, int orden){
 		c=det(matrix);
 		break;
 	default:
-		for(n=0; n<orden; n++){
-			float **submatrix=mksubmatrix(matrix, orden, n);
-			c+=matrix[0][n]*onepow(n)*laplace(submatrix, orden-1);
+		for(i=0; i<m; i++){
+			newmatrix(submatrix, m, n);
+			mksubmatrix(submatrix, matrix, m, n, i);
+			c+=matrix[0][i]*onepow(i)*laplace(submatrix, m--, n--);
 			free(submatrix);
 		}
 	}

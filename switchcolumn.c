@@ -1,16 +1,20 @@
+/*
+Given a matrix of n by n+1, a square matrix of order orden is created.
+This function switches the pos column with the n column.
+*/
 #include "switchcolumn.h"
 
-float **switchcolumn(float **matrix, int n, int orden){
+void switchcolumn(void **dest, void **ori, int m, int n, int pos){
 
-    int i, j;
+	if(m+1!=n) return;
 
-    float **smatrix=newmatrix(orden);
+	int i, j;
 
-    for(i=0; i<orden; i++)
-        for(j=0; j<orden; j++){
-            if(j==n) smatrix[i][j]=matrix[i][orden];
-            else smatrix[i][j]=matrix[i][j];
-        }
+	for(i=0; i<m; i++)
+		for(j=0; j<m; j++){
+			if(j==pos) dest[i][j]=ori[i][n];
+			else dest[i][j]=ori[i][j];
+		}
 
-    return smatrix;
+	return;
 }

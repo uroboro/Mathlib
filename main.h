@@ -49,6 +49,11 @@ typedef unsigned long ulong;
 //BOOL
 typedef enum { FALSE, TRUE } bool;
 
+//cartesian coordinates
+typedef struct {
+	float x, y, z;
+	} cartesian;
+
 //matrix
 typedef struct {
 	int m;//rows
@@ -56,9 +61,10 @@ typedef struct {
 	int o;//shelves?
 	} dimension;// para R mxn
 
-//cartesian coordinates
-typedef struct {
-	float x, y, z;
-	} cartesian;
+typedef struct{
+	void **ptr;
+	dimension order;
+	char *type;
+} matrix;
 
 #endif /*MAIN_H_*/

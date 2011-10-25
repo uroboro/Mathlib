@@ -1,9 +1,6 @@
 #ifndef MKSUBM_H
 #define MKSUBM_H
 
-#include "main.h"
-#include "newmatrix.h"
-
-float **mksubmatrix(float **matrix, int orden, int n);
+void mksubmatrix(void **dest, void **ori, int m, int n, int pos);
 
 #endif

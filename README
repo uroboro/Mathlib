@@ -7,6 +7,7 @@ Compilation of mathematical functions. Mostly matrix based ones. For now.
 List:
 - Allocate memory for a square matrix of any order
 - Make an identity matrix
+- Check matrix identity
 - Check matrix simmetry
 - Determinant of a matrix (Laplace's theorem)
 

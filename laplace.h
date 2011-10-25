@@ -1,11 +1,11 @@
 #ifndef LAPLACE_H
 #define LAPLACE_H
 
-#include "main.h"
-#include "mksubmatrix.h"
+#include "newmatrix.h"
 #include "det.h"
+#include "mksubmatrix.h"
 #include "onepow.h"
 
-float laplace(float **matrix, int orden);
+float laplace(float **matrix, int m, int n);
 
 #endif
