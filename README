@@ -2,7 +2,7 @@ README file
 22/10/11
 
 MathLib
-Compilation of mathematical functions. Mostly matrix based ones. For now.
+Compilation of matricial functions.
 
 List:
 - Allocate memory for a square matrix of any order
