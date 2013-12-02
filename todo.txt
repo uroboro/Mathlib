@@ -1,0 +1,10 @@
+To-do list
+
++ join menu() and autoMenu()
+- "translate" into Obj-C, into iPhone app.
+- functions for column and row spaces.
+- resolve n eqs with n vars (using Cramer and the inverse of A in A*X=B, X=Inv(A)*B.
+- make mflib.c into dylib, opening the way to a plugin system.
+- mofidy mtxlib.c functions so that they take an int and a matrix array. then, functions like addition can add several matrices at a time.
+- add a zero sign checker so as to not have -0 values
+- make mtxnode have (void*)data so it is reusable

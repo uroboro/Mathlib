@@ -1,19 +1,33 @@
-CC=gcc
-CFLAGS=-c -g -Wall
-LDFLAGS=-g
-SOURCES=$(wildcard *.c)
-HEADERS=$(wildcard *.h)
-OBJS=$(SOURCES:.c=.o)
-EXE=main.x
+# Makefile for C/C++, Obj-C/C++, iOS apps
+#
+# Written by Federico Sandri <uroboro.845@gmail.com>
+# (C) 2012-2013
 
-$(EXE): $(OBJS)
-	@echo "linking $(EXE) with $(OBJS)"
-	@$(CC) $(OBJS) -o $@ $(LDFLAGS)
+################################################################
 
-%.o: %.c Makefile
-	@echo "compiling $@"
-	@$(CC) $(CFLAGS) -o $@ $<
+PROJECTNAME = matrices
 
-clean:
-	@echo "deleting files"
-	@rm -f $(OBJS) $(EXE)
+# if it's an app,
+COMPANYNAME = corp
+
+# version numbers
+VERSION = 0
+REVISION = 0
+PATCH = 1
+
+# options: c, cplusplus, objc, objcplusplus
+LANGUAGE = c
+
+# options:
+# `terminal' for commandline programs
+# `ios' for iOS apps
+PLATFORM = terminal
+
+# if language is objc, add frameworks to the list:
+FRAMEWORKS = 
+
+#CFLAGS = 
+#LDFLAGS = 
+
+include ~/code/makefiles/common.mk
+

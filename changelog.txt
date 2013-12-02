@@ -1,0 +1,226 @@
+Changelog
+		+ edits 	- comments
+
+1.4.7 - 25/09/12
++ changed mtxInitWith() to mtxInitWithScalar()
++ added new mtx functions, counterparts added in 1.4.6
+mtxPrintXY(), mtxPrintMinor(), mtxCopyMatrix(), mtxSolveX()
++ ignored mtxCopy() because it accessed the matrices' elements
+- mtxLinearOp() should be transformed into an mtx_ function
+
+1.4.6 - 17/09/12
++ changed ptrInitWith() to ptrInitWithScalar()
++ added new ptr functions:
+ptrCopyMatrix(), self explanatory
+ptrPrintXY(), prints a single element of a matrix
+ptrPrintMinor(), prints a section of a matrix
+ptrMinor(), creates a new matrix from a section of another
+ptrSolveX(), solves an m variable system of m equations
+- still missing mtx_ and mn_ counterparts. Also implementation in demo program.
+
+1.4.5-1 - 18/07/12
++ added checks in mflib.c loading functions regarding the input of matrix sizes.
+
+1.4.5 - 17/07/12
++ added NULL checks to prevent crashes from trying to access fields of NULL. applied in mnlib.c
++ added extra args to debug functions.
++ merged menu() and autoMenu(), now autoMenu() does not ask for an answer depending on the third argument being NULL or not.
++ changed inner working of mfListIO(), now working with arrays of error codes instead of a switch statement
+
+1.4.4-1 - 21/06/12:
++ added safety checks to ptr functions, checking for NULL pointer, m and n being less than 1.
+
+1.4.4 - 18/06/12:
++ changed boolean TRUE and FALSE values to 0x01 and 0x00 respectively.
++ changed matrix structure bool fields to bit fields, thus reducing the matrix struct size from 36 to 16 bytes. changed mtxlib implementations accordingly.
+
+1.4.3-1 - 21/05/12:
++ corrected ptrInverse() multiplying 'self' instead of 'adjugate'.
+- noticed 'debug' no longer exists, so it will be added in a future update as a step-by-step variable printer.
+
+1.4.3 - 18/05/12:
++ started debug.h, including:
+	stringify(), uses the # operator from the preprocessor to convert variable names into strings.
+	dbg[var type](), prints the variable name and its current value.
++ added config option to menu, making editable both 'displayAfterPush' and 'path' vars editable.
+- 'debug' var in mtxlib.h still needs to be editable.
+- correct mnPop() asking even while list is empty.
+- if list is empty, "#Empty list" is showed twice.
+
+1.4.2-2 - 16/05/12:
++ corrected misuse of regular property, added isSquare property and renamed isVersor to isOrthonormal.
+
+1.4.2-1 - 14/05/12:
++ renamed internal variables for better understanding of inner workings.
++ removed '\n' from ansYesNo() to add more flexibility.
+
+1.4.2 - 13/05/12:
++ corrected definition of orthogonality and added versor-related functions.
++ added ptrInvert() in order to have inversion at low level.
+
+1.4.1 - 07/05/12:
++ added "# of matrices loaded" popup after loading from file.
+
+1.4.0 - 01/05/12:
++ added mnCount() to return the number of matrices loaded in a list.
+
+1.3.9-1 - 30/04/12:
++ mnDump() empties the list as expected.
+
+1.3.9 - 23/04/12:
++ added new options to the menu:
+	enum - enumerates the indexes used in the list.
+	dump - empties the list.
++ added new functions for load/save matrix/matrices:
+	mfMatrixIO()
+	mfListIO()
+
+1.3.7 - 22/04/12:
++ renamed some source files:
+	mtxnodelib.* -> mnlib.*
+	mtxfile.* -> mflib.*
++ mnEnumerate() works as expected.
++ implemented mnList() to return an array of the indexes, being the first position the number of indexes.
+
+1.3.6 - 20/04/12:
++ added mnEnumerate() to return a string list of the loaded matrices.
++ renamed mnList() to mnShowAll() for clearance and use mnList for other purposes.
+
+1.3.5 - 18/04/12:
++ changed matrix size fields from int to unsigned char to reduce memory usage. Final matrix size: 32 bytes. (First size: 96 bytes)
+
+1.3.4 - 17/04/12:
++ reworked logic from checking for true and continuing, to checking for false and exiting. If this is unclear, added NULL checks to prevent crashes from trying to access fields of NULL. applied in mtxlib.c and ptrlib.c
++ added 'self' field to matrix struct.
+
+1.3.3 - 15/04/12:
++ changed return values of mnFunctions.
++ rephrased evaluation functions to check for false instead of true.
++ rephrased mtxFunctions to have main logic in lower tab hierarchy.
+
+1.3.2 - 14/04/12:
++ changed definition of bool from 'typedef enum' to 'typedef unsigned char' and two '#define', thus reducing the size of matrix from 96 to 36 bytes.
+
+1.3.1 - 13/04/12:
++ corrected mainArray() using bIs* properties instead of is*.
++ updated mfLoadMatrixFromFile() to use fscanf() return values.
+
+1.3.0-1 - 11/04/12:
++ changed properties' prefix from bIsSth to isSth.
+
+1.3.0 - 09/04/12:
+- began logging
++ made mfLoadMatricesFromFile() load matrices as intended.
++ mfSaveMatricesToFile() uses ":" and ";" for formatting:
+ ":" between matrices.
+ ";" at end of file.
+
+1.2.0
++ mtxnode struct implementation.
++ list managed list of matrices.
+
+1.1.0
++ matrix struct implementation.
++ array managed list of matrices.
+
+First release:
++ floating point pointers and size vars.
++ reusable switch-based menu.
+
+List of functions by category:
+
+Pointer interface:
+float **ptrNew(int m, int n);
+void ptrFree(float **self, int m, int n);
+float **ptrInitAsId(float **self, int m, int n);
+float **ptrInitWith(float **self, int m, int n, float scalar);
+float **ptrInitManually(float **self, int m, int n);
+float **ptrPrint(float **self, int m, int n);
+bool ptrIsEqual(float **selfA, int mA, int nA, float **selfB, int mB, int nB);
+bool ptrIsIdentity(float **self, int m, int n);
+bool ptrIsSymmetric(float **self, int m, int n);
+bool ptrIsAntiSymmetric(float **self, int m, int n);
+bool ptrIsTriangularAbove(float **self, int m, int n);
+bool ptrIsTriangularBelow(float **self, int m, int n);
+bool ptrIsDiagonal(float **self, int m, int n);
+float **ptrTranspose(float **self, int m, int n);
+float **ptrOpposite(float **self, int m, int n);
+float **ptrSMultiply(float **self, int m, int n, float scalar);
+float **ptrVMultiply(float **selfA, int mA, int nA, float **selfB, int mB, int nB);
+float **ptrCofactor(float **self, int m, int n);
+float **ptrAdjugate(float **self, int m, int n);
+float **ptrSubmatrix(float **self, int m, int n, int x, int y);
+float ptrLaplace(float **self, int m, int n);
+
+Matrix interface:
+matrix *mtxInput(void);
+matrix *mtxNew(int, int);
+void mtxFree(matrix *sender);
+void mtxInitAsId(matrix *sender);
+void mtxInitWith(matrix *sender, float scalar);
+void mtxScan(matrix *sender);
+void mtxPrint(matrix *sender);
+void mtxProperties(matrix *sender);
+void mtxUpdate(matrix *sender);
+void mtxDeterminant(matrix *sender);
+void mtxIsRegular(matrix *sender);
+void mtxIsIdentity(matrix *sender);
+void mtxIsInverse(matrix *sender);
+void mtxIsSymmetric(matrix *sender);
+void mtxIsAntiSymmetric(matrix *sender);
+void mtxIsTriangular(matrix *sender);
+void mtxIsDiagonal(matrix *sender);
+void mtxIsOrtogonal(matrix *sender);
+matrix *mtxOpposite(matrix *sender);
+matrix *mtxTranspose(matrix *sender);
+matrix *mtxAdjugate(matrix *sender);
+matrix *mtxInverse(matrix *sender);
+matrix *mtxLinearOp(matrix *senderA, char, matrix *senderB);
+matrix *mtxVMultiply(matrix *senderA, matrix *senderB);
+matrix *mtxSMultiply(matrix *sender, float);
+bool mtxEquals(matrix *senderA, matrix *senderB);
+bool mtxCopy(matrix *senderA, matrix *senderB);
+
+Node interface:
+mtxnode *mnFindByIndex(mtxnode *node, int index);
+mtxnode *mnFindByData(mtxnode *node, matrix *self);
+mtxnode *mnFindNextAvailable(mtxnode *node);
+mtxnode *mnPush(mtxnode *node, matrix *self);
+mtxnode *mnPop(mtxnode *node, int index);
+mtxnode *mnShow(mtxnode *node);
+mtxnode *mnShowAll(mtxnode *node);
+mtxnode *mnFree(mtxnode *node);
+mtxnode *mnDump(mtxnode *node);
+mtxnode *mnUpdateAll(mtxnode *node);
+mtxnode *mnPrint(mtxnode *node);
+mtxnode *mnProperties(mtxnode *node);
+mtxnode *mnUpdate(mtxnode *node);
+mtxnode *mnOpposite(mtxnode *list, mtxnode *node);
+mtxnode *mnTranspose(mtxnode *list, mtxnode *node);
+mtxnode *mnAdjugate(mtxnode *list, mtxnode *node);
+mtxnode *mnInverse(mtxnode *list, mtxnode *node);
+mtxnode *mnLinearOp(mtxnode *node, mtxnode *nodeA, char op, mtxnode *nodeB);
+mtxnode *mnVMultiply(mtxnode *node, mtxnode *nodeA, mtxnode *nodeB);
+mtxnode *mnSMultiply(mtxnode *node, mtxnode *nodeA, float scalar);
+bool mnEquals(mtxnode *nodeA, mtxnode *nodeB);
+bool mnCopy(mtxnode *nodeA, mtxnode *nodeB);
+
+File interface:
+int mfSaveMatrixToFile(matrix *self, char *path);
+int mfLoadMatrixFromFile(matrix *self, char *path);
+int mfSaveMatricesToFile(mtxnode *list, char *path);
+int mfLoadMatricesFromFile(mtxnode **list, char *path);
+
+other:
+void ansYesNo(bool);
+bool equals(char *str, char *var);
+int menu(int argc, char **argv);
+int autoMenu(int argc, char **argv, char *ans);
+
+int mainList(void);
+mtxnode *listFind(mtxnode *list, char letter, int max);
+
+int mainArray(void);
+matrix *arrayFind(matrix **matrices, char letter, int max);
+matrix *arrayShow(matrix *sender, int *count);
+void arrayFree(matrix **matrices, int count);

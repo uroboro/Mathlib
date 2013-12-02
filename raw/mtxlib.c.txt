@@ -1,0 +1,470 @@
+#include "mtxlib.h"
+
+//memory management
+matrix *mtxNew(int m, int n) {
+	if (m < 1 || n < 1)
+		return NULL;
+
+	matrix *self = (matrix *) malloc(sizeof(matrix));
+	self->m = m;
+	self->n = n;
+	self->mtx = NULL;
+
+/*	useless in C
+	//functions
+	self->set = &mtxScan;
+	self->get = &mtxPrint;
+	self->det = &mtxDeterminant;
+	self->initAsId = &mtxInitAsId;
+	self->initWith = &mtxInitWith;
+*/
+	//Boolean properties
+	self->isDet[0] = FALSE;
+	self->isSquare[0] = FALSE;
+	self->isRegular[0] = FALSE;
+	self->isIdentity[0] = FALSE;
+	self->isSymmetric[0] = FALSE;
+	self->isAntiSymmetric[0] = FALSE;
+	self->isOrthogonal[0] = FALSE;
+	self->isOrthonormal[0] = FALSE;
+	self->isTriangularAbove[0] = FALSE;
+	self->isTriangularBelow[0] = FALSE;
+	self->isDiagonal[0] = FALSE;
+
+	return self;
+}
+void mtxFree(matrix *self) {
+	if (self == NULL) {
+		printf("#Empty pointer.\n");
+		return;
+	}
+
+	ptrFree(self->mtx, self->m, self->n);
+	free(self);
+	return;
+}
+
+/*------------------------------------------------------------------*/
+
+//matrix I/O
+void mtxInitAsId(matrix *self) {
+	if (self == NULL) {
+		printf("#Empty pointer.\n");
+		return;
+	}
+
+	self->mtx = ptrNew(self->m, self->n);
+	self->mtx = ptrInitAsId(self->mtx, self->m, self->n);
+	mtxUpdate(self);
+	return;
+}
+void mtxInitWith(matrix *self, float scalar) {
+	if (self == NULL) {
+		printf("#Empty pointer.\n");
+		return;
+	}
+
+	self->mtx = ptrNew(self->m, self->n);
+	self->mtx = ptrInitWith(self->mtx, self->m, self->n, scalar);
+	mtxUpdate(self);
+	return;
+}
+void mtxScan(matrix *self) {
+	if (self == NULL) {
+		printf("#Empty pointer.\n");
+		return;
+	}
+
+	self->mtx = ptrNew(self->m, self->n);
+	self->mtx = ptrInitManually(self->mtx, self->m, self->n);
+	mtxUpdate(self);
+	return;
+}
+void mtxPrint(matrix *self) {
+	if (self == NULL) {
+		printf("#Empty pointer.\n");
+		return;
+	}
+
+	ptrPrint(self->mtx, self->m, self->n);
+	return;
+}
+
+/*------------------------------------------------------------------*/
+
+//1 matrix functions
+//note that these functions allocate new memory, so remember to free the matrices if you are not using them again
+matrix *mtxOpposite(matrix *self) {
+	if (self == NULL)
+		return NULL;
+
+	matrix *opposite = mtxNew(self->n, self->m);
+	opposite->mtx = ptrOpposite(self->mtx, self->m, self->n);
+	return opposite;
+}
+matrix *mtxTranspose(matrix *self) {
+	if (self == NULL)
+		return NULL;
+
+	matrix *transpose = mtxNew(self->n, self->m);
+	transpose->mtx = ptrTranspose(self->mtx, self->m, self->n);
+	return transpose;
+}
+matrix *mtxAdjugate(matrix *self) {
+	if (self == NULL)
+		return NULL;
+
+	mtxIsSquare(self);
+	if (self->isSquare[1] == FALSE)
+		return NULL;
+
+	matrix *adjugate = mtxNew(self->m, self->n);
+	adjugate->mtx = ptrAdjugate(self->mtx, self->m, self->n);
+	return adjugate;
+}
+matrix *mtxInverse(matrix *self) {
+	if (self == NULL)
+		return NULL;
+
+	mtxDeterminant(self);
+	if (self->isDet[1] == FALSE || self->determinant == 0)
+		return NULL;
+
+/*	matrix *adjugate = mtxAdjugate(self);
+	float invDet = 1 / self->determinant;
+	matrix *inverse = mtxSMultiply(adjugate, invDet);
+	mtxFree(adjugate);
+*/
+	matrix *inverse = mtxNew(self->m, self->n);
+	inverse->mtx = ptrInverse(self->mtx, self->m, self->n);
+
+	return inverse;
+}
+
+/*------------------------------------------------------------------*/
+
+//2 matrix functions
+
+//Linear matrix operations
+//sourceA operation sourceB
+matrix *mtxLinearOp(matrix *sourceA, char op, matrix *sourceB) {
+	if (sourceA == NULL || sourceB == NULL || ! (op == '+' || op == '-' || op == '*' || op == '/'))
+		return NULL;
+
+	if (sourceA->m != sourceB->m || sourceA->n != sourceB->n)
+		return NULL;
+
+	int i, j;
+	matrix *temp = mtxNew(sourceA->m, sourceA->n);
+	temp->mtx = ptrNew(temp->m, temp->n);
+	for (i = 0; i < sourceA->m; i++)
+		for (j = 0; j < sourceA->n; j++)
+			switch (op) {
+			case '+':
+				temp->mtx[j][i] = sourceA->mtx[i][j] + sourceB->mtx[i][j];
+				break;
+			case '-':
+				temp->mtx[j][i] = sourceA->mtx[i][j] - sourceB->mtx[i][j];
+				break;
+			case '*':
+				temp->mtx[j][i] = sourceA->mtx[i][j] * sourceB->mtx[i][j];
+				break;
+			case '/':
+				if (sourceB->mtx[i][j] == 0) {
+					mtxFree(temp);
+					return NULL;
+				}
+				temp->mtx[j][i] = sourceA->mtx[i][j] / sourceB->mtx[i][j];
+				break;
+			}
+	return temp;
+}
+
+//Traditional matrix multiplication
+matrix *mtxVMultiply(matrix *sourceA, matrix *sourceB) {
+	if (sourceA == NULL || sourceB == NULL)
+		return NULL;
+
+	if (sourceA->n != sourceB->m)
+		return NULL;
+
+	matrix *temp = mtxNew(sourceA->m, sourceB->n);
+	temp->mtx = ptrVMultiply(sourceA->mtx, sourceA->m, sourceA->n, sourceB->mtx, sourceB->m, sourceB->n);
+	return temp;
+}
+
+//1 float, 1 matrix functions
+matrix *mtxSMultiply(matrix *self, float scalar) {
+	if (self == NULL)
+		return NULL;
+
+	matrix *temp = mtxNew(self->m, self->n);
+	temp->mtx = ptrSMultiply(self->mtx, self->m, self->n, scalar);
+	return temp;
+}
+
+/*------------------------------------------------------------------*/
+
+//SELF functions
+void mtxProperties(matrix *self) {
+	if (self == NULL) {
+		printf("#Empty pointer.\n");
+		return;
+	}
+
+	printf("Determinant: ");
+	if (self->isDet[1] == TRUE)
+		printf(PRINTYPE, self->determinant);
+	else
+		printf("NAN");
+	printf("\n");
+
+	printf("Is square: ");
+	ansYesNo(self->isSquare[1]);
+	printf("\n");
+
+	printf("Is regular: ");
+	ansYesNo(self->isRegular[1]);
+	printf("\n");
+
+	printf("Is identity: ");
+	ansYesNo(self->isIdentity[1]);
+	printf("\n");
+
+	printf("Is symmetric: ");
+	ansYesNo(self->isSymmetric[1]);
+	printf("\n");
+
+	printf("Is antisymmetric: ");
+	ansYesNo(self->isAntiSymmetric[1]);
+	printf("\n");
+
+	printf("Is orthogonal: ");
+	ansYesNo(self->isOrthogonal[1]);
+	printf("\n");
+
+	printf("Is orthonormal: ");
+	ansYesNo(self->isOrthogonal[1]);
+	printf("\n");
+
+	printf("Is triangular superior: ");
+	ansYesNo(self->isTriangularAbove[1]);
+	printf("\n");
+
+	printf("Is triangular inferior: ");
+	ansYesNo(self->isTriangularBelow[1]);
+	printf("\n");
+
+	printf("Is diagonal: ");
+	ansYesNo(self->isDiagonal[1]);
+	printf("\n");
+
+	return;
+}
+void mtxUpdate(matrix *self) {
+	if (self == NULL) {
+		printf("#Empty pointer.\n");
+		return;
+	}
+
+	self->isDet[0] = FALSE;
+	mtxDeterminant(self);
+
+	self->isSquare[0] = FALSE;
+	mtxIsSquare(self);
+
+	self->isRegular[0] = FALSE;
+	mtxIsRegular(self);
+
+	self->isIdentity[0] = FALSE;
+	mtxIsIdentity(self);
+
+	self->isSymmetric[0] = FALSE;
+	mtxIsSymmetric(self);
+
+	self->isAntiSymmetric[0] = FALSE;
+	mtxIsAntiSymmetric(self);
+
+	self->isOrthogonal[0] = FALSE;
+	mtxIsOrtogonal(self);
+
+	self->isOrthonormal[0] = FALSE;
+	mtxIsOrthonormal(self);
+
+	self->isTriangularAbove[0] = FALSE;
+	self->isTriangularBelow[0] = FALSE;
+	mtxIsTriangular(self);
+
+	self->isDiagonal[0] = FALSE;
+	mtxIsDiagonal(self);
+
+	return;
+}
+
+//det(mtx)
+void mtxDeterminant(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isDet[0] == FALSE) {
+		if (self->isSquare[1] == TRUE) {
+			self->determinant = ptrLaplace(self->mtx, self->m, self->n);
+			self->isDet[1] = TRUE;
+		}
+		else {
+			self->determinant = 0;
+			self->isDet[1] = FALSE;
+		}
+	self->isDet[0] = TRUE;
+	}
+	return;
+}
+//m == n
+void mtxIsSquare(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isSquare[0] == FALSE) {
+		self->isSquare[1] = (self->m == self->n)? TRUE:FALSE;
+		self->isSquare[0] = TRUE;
+	}
+	return;
+}
+//mtx == id
+void mtxIsIdentity(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isIdentity[0] == FALSE) {
+		self->isIdentity[1] = ptrIsIdentity(self->mtx, self->m, self->n);
+		self->isIdentity[0] = TRUE;
+	}
+	return;
+}
+//det(mtx)!=0
+void mtxIsRegular(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isRegular[0] == FALSE) {
+		mtxIsSquare(self);
+		if (self->isSquare[1] == TRUE)
+			self->isRegular[1] = (self->determinant != 0)? TRUE:FALSE;
+		else
+			self->isRegular[1] = FALSE;
+		self->isRegular[0] = TRUE;
+	}
+	return;
+}
+//mtx == trn(mtx)
+void mtxIsSymmetric(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isSymmetric[0] == FALSE) {
+		mtxIsSquare(self);
+		if (self->isSquare[1] == TRUE)
+			self->isSymmetric[1] = ptrIsSymmetric(self->mtx, self->m, self->n);
+		self->isSymmetric[0] = TRUE;
+	}
+	return;
+}
+//mtx == -trn(mtx)
+void mtxIsAntiSymmetric(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isAntiSymmetric[0] == FALSE) {
+		mtxIsSquare(self);
+		if (self->isSquare[1] == TRUE)
+			self->isAntiSymmetric[1] = ptrIsAntiSymmetric(self->mtx, self->m, self->n);
+		self->isAntiSymmetric[0] = TRUE;
+	}
+	return;
+}
+//inv(mtx)==trn(mtx)
+void mtxIsOrtogonal(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isOrthogonal[0] == FALSE) {
+		mtxIsRegular(self);
+		if (self->isRegular[1] == TRUE)
+			self->isOrthogonal[1] = ptrIsOrthogonal(self->mtx, self->m, self->n);
+		else
+			self->isOrthogonal[1] = FALSE;
+		self->isOrthogonal[0] = TRUE;
+	}
+	return;
+}
+//det(mtx)==1
+void mtxIsOrthonormal(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isOrthonormal[0] == FALSE) {
+		mtxIsRegular(self);
+		if (self->isRegular[1] == TRUE)
+			self->isOrthonormal[1] = (self->determinant == 1)? TRUE:FALSE;
+		else
+			self->isOrthonormal[1] = FALSE;
+		self->isOrthonormal[0] = TRUE;
+	}
+	return;
+}
+void mtxIsTriangular(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isTriangularAbove[0] == FALSE) {
+		self->isTriangularAbove[1] = ptrIsTriangularAbove(self->mtx, self->m, self->n);
+		self->isTriangularAbove[0] = TRUE;
+	}
+	if (self->isTriangularBelow[0] == FALSE) {
+		self->isTriangularBelow[1] = ptrIsTriangularBelow(self->mtx, self->m, self->n);
+		self->isTriangularBelow[0] = TRUE;
+	}
+	return;
+}
+void mtxIsDiagonal(matrix *self) {
+	if (self == NULL)
+		return;
+
+	if (self->isDiagonal[0] == FALSE) {
+		mtxIsTriangular(self);
+		if (self->isTriangularAbove[1] == TRUE && self->isTriangularBelow[1] == TRUE)
+			self->isDiagonal[1] = TRUE;
+		else
+			self->isDiagonal[1] = FALSE;
+		self->isDiagonal[0] = TRUE;
+	}
+	return;
+}
+
+/*------------------------------------------------------------------*/
+
+//Evaluation
+bool mtxEquals(matrix *dest, matrix *source) {
+	if (dest == NULL || source == NULL)
+		return FALSE;
+	if (dest == source)
+		return TRUE;
+	return ptrIsEqual(dest->mtx, dest->m, dest->n, source->mtx, source->m, source->n);
+}
+bool mtxCopy(matrix *dest, matrix *source) {
+	if (dest == NULL || source == NULL)
+		return FALSE;
+	if (dest == source)
+		return TRUE;
+	if (source->m != dest->m || source->n != dest->n)
+		return FALSE;
+
+	int i, j;
+	if (dest->mtx == NULL)
+		dest->mtx = ptrNew(dest->m, dest->n);
+	for (i = 0; i < source->m; i++)
+		for (j = 0; j < source->n; j++)
+			dest->mtx[i][j] = source->mtx[i][j];
+	mtxUpdate(dest);
+	return TRUE;
+}
